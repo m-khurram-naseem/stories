@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "26295175182",
+    "project_id": "stories-backend-system",
+    "storage_bucket": "stories-backend-system.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:26295175182:android:7f2ad7a7a036da1bead45f",
+        "android_client_info": {
+          "package_name": "com.example.stories"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdEzu-OQ8MIGbBebaYEVJKQUuH73vh_jg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
