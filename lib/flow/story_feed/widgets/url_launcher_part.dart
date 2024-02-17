@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class UrlLauncherPart extends StatelessWidget {  
@@ -5,6 +6,6 @@ class UrlLauncherPart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(color: Colors.blue,);
+    return const Scaffold(body: Center(child: CupertinoActivityIndicator(),),);
   }
 }

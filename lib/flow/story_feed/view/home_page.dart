@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:stories/discover/view/discover_page.dart';
-import 'package:stories/story_feed/model/story.dart';
-import 'package:stories/story_feed/widgets/story_list_view.dart';
-import 'package:stories/story_feed/widgets/url_launcher_part.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stories/flow/discover/view/discover_page.dart';
+import 'package:stories/flow/story_feed/bloc/feed_bloc.dart';
+import 'package:stories/flow/story_feed/bloc/feed_events.dart';
+import 'package:stories/flow/story_feed/model/story.dart';
+import 'package:stories/flow/story_feed/widgets/feed_widgets.dart';
+import 'package:stories/flow/story_feed/widgets/url_launcher_part.dart';
 
 class HomePage extends StatefulWidget {
+  static const pageName = '/';
   const HomePage({super.key});
 
   @override
@@ -17,9 +21,10 @@ class _HomePageState extends State<HomePage> {
   late ScrollPosition position;
 
   @override
-  void initState() {  
-    super.initState();    
-    pageController = PageController(initialPage: _initialPageIndex);        
+  void initState() {
+    super.initState();
+    pageController = PageController(initialPage: _initialPageIndex);
+    context.read<FeedBloc>().add(const LoadFeedEvent());
   }
 
   @override
@@ -27,27 +32,34 @@ class _HomePageState extends State<HomePage> {
     pageController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
+    final bloc = context.read<FeedBloc>();
     return SafeArea(
       child: Scaffold(
         body: Center(
           child: PageView(
-            controller: pageController,
-            children: [
-              const DiscoverPage(),
-              StoryListView(
-              storyList: storyList,
-            ),
-            const UrlLauncherPart(),
+            controller: bloc.pagesController,
+            onPageChanged: (value) {
+              if(value == 2){
+                
+                bloc.add(LaunchUrlEvent());
+              }
+            },
+            children: const [
+              DiscoverPage(),
+              MainFeed(),
+              UrlLauncherPart(),
             ],
-            
           ),
         ),
       ),
     );
   }
 }
+
+
 
 List<Story> storyList = [
   for (int i = 0; i < 10; i++)

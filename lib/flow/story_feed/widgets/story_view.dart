@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:stories/story_feed/model/story.dart';
-import 'package:stories/story_feed/widgets/story_related_widgets.dart';
+import 'package:stories/flow/story_feed/model/story.dart';
+import 'package:stories/flow/story_feed/widgets/story_view_related_widgets.dart';
 
-class MainStoryPart extends StatelessWidget {
-  static const _imageFlex = 33 , _titleFlex = 15 , _descriptionFlex = 31 , _btnDetailFlex = 10;
+class StoryView extends StatelessWidget {
+   static const _imageFlex = 33 , _titleFlex = 15 , _descriptionFlex = 31 , _btnDetailFlex = 10;
   static const _imageBottomFlex = 3 , _titleBottomFlex = 2 , _descriptionBottomFlex = 3 , _btnDetailBottomFlex = 3;
   final Story story;
-  const MainStoryPart({
+  const StoryView({
     super.key,
     required this.story,
-  });
-
+  });  
   @override
   Widget build(BuildContext context) {
     final Size(:width, :height) = MediaQuery.sizeOf(context);

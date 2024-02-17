@@ -12,7 +12,7 @@ class Story {
       storyByKey = 'storyBy';
 
   // Instance Variables
-  int storyId;
+  num storyId;
   String title;
   String description;
   String imageUrl;
@@ -32,7 +32,7 @@ class Story {
   });
 
   Story copyWith({
-    int? storyId,
+    num? storyId,
     String? title,
     String? description,
     String? imageUrl,
@@ -68,13 +68,13 @@ class Story {
 
   factory Story.fromMap(Map<String, dynamic> map) {
     return Story(
-      storyId: map[storyIdKey] as int,
+      storyId: map[storyIdKey] as num,
       title: map[titleKey] as String,
       description: map[descriptionKey] as String,
       imageUrl: map[imageUrlKey] as String,
       storyDetailUrl: map[storyDetailUrlKey] as String,
       category: map[categoryKey] as String,
-      dateTime: DateTime.fromMillisecondsSinceEpoch(map[dateTimeKey] as int),
+      dateTime: DateTime.fromMillisecondsSinceEpoch((map[dateTimeKey] as num).toInt()),
       storyBy: map[storyByKey] as String,
     );
   }
