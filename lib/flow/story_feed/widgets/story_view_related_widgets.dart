@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:stories/flow/story_feed/bloc/feed_bloc.dart';
+import 'package:stories/flow/story_feed/bloc/feed_events.dart';
 
 class StoryImage extends StatelessWidget {
   static const _borderRadius = 30.0;
@@ -14,8 +18,17 @@ class StoryImage extends StatelessWidget {
       borderRadius: BorderRadius.circular(_borderRadius),
       clipBehavior: Clip.antiAlias,
       child: Image.network(
+        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+          if (frame != null) return child;
+          return Shimmer.fromColors(
+            baseColor: Colors.grey.shade300,
+            highlightColor: Colors.grey.shade100,
+            child: Container(color: Colors.white),
+          );
+        },
+        errorBuilder: (context, error, stackTrace) => const Placeholder(),
         imageUrl,
-        fit: BoxFit.contain,
+        fit: BoxFit.cover,
       ),
     );
   }
@@ -84,9 +97,12 @@ class StoryDetailButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = context.read<FeedBloc>();
     final width = MediaQuery.sizeOf(context).width;
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        bloc.add(LaunchUrlEvent());
+      },
       child: LayoutBuilder(builder: (context, constraints) {
         return Stack(
           children: [

@@ -16,23 +16,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  static const _initialPageIndex = 1;
-  late PageController pageController;
-  late ScrollPosition position;
 
   @override
   void initState() {
-    super.initState();
-    pageController = PageController(initialPage: _initialPageIndex);
     context.read<FeedBloc>().add(const LoadFeedEvent());
+    super.initState();
   }
-
-  @override
-  void dispose() {
-    pageController.dispose();
-    super.dispose();
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<FeedBloc>();
@@ -40,10 +30,9 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         body: Center(
           child: PageView(
-            controller: bloc.pagesController,
+            controller: bloc.horizontalPagesController,
             onPageChanged: (value) {
-              if(value == 2){
-                
+              if (value == 2) {
                 bloc.add(LaunchUrlEvent());
               }
             },
@@ -59,8 +48,6 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-
-
 List<Story> storyList = [
   for (int i = 0; i < 10; i++)
     Story(
@@ -71,7 +58,7 @@ List<Story> storyList = [
             'Pic of screw in sandwich served on IndiGo flight goes viral, airline responds Pic of screw in sandwich served on IndiGo flight goes viral, airline responds Pic of screw in sandwich served on IndiGo flight goes viral, airline responds Pic of screw in sandwich served on IndiGo flight goes viral, airline responds Pic of screw in sandwich served on IndiGo',
         imageUrl:
             'https://images.unsplash.com/photo-1575936123452-b67c3203c357?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D',
-        storyDetailUrl: 'https://unsplash.com/s/photos/image',
+        storyDetailUrl: 'https://www.instagram.com',
         category: 'General',
         dateTime: DateTime.now(),
         storyBy: 'M Khurram Naseem'),

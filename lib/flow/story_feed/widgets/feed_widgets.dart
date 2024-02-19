@@ -4,7 +4,8 @@ import 'package:stories/flow/story_feed/bloc/feed_bloc.dart';
 import 'package:stories/flow/story_feed/bloc/feed_events.dart';
 import 'package:stories/flow/story_feed/bloc/feed_states.dart';
 import 'package:stories/flow/story_feed/model/story.dart';
-import 'package:stories/flow/story_feed/view/home_page.dart';
+import 'package:stories/flow/story_feed/widgets/no_data_widget.dart';
+import 'package:stories/util/comman_widgets/loading_widget.dart';
 import 'package:stories/flow/story_feed/widgets/story_view.dart';
 
 class MainFeed extends StatelessWidget {
@@ -12,27 +13,32 @@ class MainFeed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FeedBloc,FeedState>(
-      builder: (context , state) {
-        // if(state is LoadingFeedState){
-        //   return const LoadingFeedWidget();
-        // }else if(state is LoadedFeedState){
-        //   return LoadedFeedWidget(storyList: state.list);
-        // }else if(state is ErrorFeedState){
-        //   return ErrorFeedWidget(message: state.message);
-        // }
-        return LoadedFeedWidget(storyList: storyList);
-      }
+    return RefreshIndicator(
+      triggerMode: RefreshIndicatorTriggerMode.onEdge,
+      onRefresh: () {
+        context.read<FeedBloc>().add(const LoadFeedEvent());
+        return Future.value(null);
+      },
+      child: BlocBuilder<FeedBloc, FeedState>(builder: (context, state) {        
+        if (state is LoadingFeedState) {
+          return const LoadingFeedWidget();
+        } else if (state is LoadedFeedState) {
+          return LoadedFeedWidget(storyList: state.list);
+        } else if (state is ErrorFeedState) {
+          return ErrorFeedWidget(message: state.message);
+        }
+        return LoadedFeedWidget(storyList: (state as LoadedFeedState).list);
+      }),
     );
   }
 }
 
-class LoadingFeedWidget extends StatelessWidget {
+class LoadingFeedWidget extends StatelessWidget {  
   const LoadingFeedWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const CircularProgressIndicator.adaptive();
+    return const LoadingWidget();    
   }
 }
 
@@ -46,7 +52,7 @@ class LoadedFeedWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<FeedBloc>();
-    return PageView.builder(
+    return storyList.isEmpty ? const NoDataWidget() : PageView.builder(
       onPageChanged: (value) {
         bloc.add(PageUpdatedEvent(currentIndex: value));
       },
@@ -61,7 +67,7 @@ class LoadedFeedWidget extends StatelessWidget {
 
 class ErrorFeedWidget extends StatelessWidget {
   final String message;
-  const ErrorFeedWidget({super.key , required this.message});
+  const ErrorFeedWidget({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {

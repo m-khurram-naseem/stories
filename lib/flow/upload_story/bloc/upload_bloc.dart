@@ -53,8 +53,8 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
       try {
         if (imageBytes == null) {
           emit(const UploadErrorState(message: _imageMissingMessage));
-        } else {
-          // Current date and time to keep things specific and different
+        } else{                    
+            // Current date and time to keep things specific and different
           DateTime dateTime = DateTime.now();
           emit(const UploadingState(
               message:
@@ -69,17 +69,18 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
           await storyDb.insertStory(
             Story(
               storyId: dateTime.millisecondsSinceEpoch,
-              title: titleController.text,
-              description: descriptionController.text,
+              title: titleController.text.trim(),
+              description: descriptionController.text.trim(),
               imageUrl: imageUrl,
-              storyDetailUrl: storyDetailUrlController.text,
-              category: categoryController.text,
+              storyDetailUrl: storyDetailUrlController.text.trim(),
+              category: categoryController.text.toLowerCase().trim(),
               dateTime: dateTime,
-              storyBy: storyByController.text,
+              storyBy: storyByController.text.trim(),
             ),
           );
           // Emitting success state to notifiy user of successful upload
           emit(const UploadedState(message: _uploadSuccessMessage));
+
         }
       } on FirebaseException catch (e) {
         emit(UploadErrorState(message: 'Firebase:${e.toString()}'));

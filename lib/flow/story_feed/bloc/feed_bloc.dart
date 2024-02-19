@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stories/flow/story_feed/view/home_page.dart';
@@ -11,12 +12,16 @@ import 'package:stories/flow/story_feed/model/story.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FeedBloc extends Bloc<FeedEvent, FeedState> {
-  late PageController pagesController;
+  late PageController horizontalPagesController;
+  late PageController verticalPagesController;
+  static const int animationDuration = 300, delayDuration = 500;
   final StoryDb db = StoryDb();
+  List<Story> stories = storyList;
   late int currentIndex = 0;
 
   FeedBloc() : super(InitialFeedState()) {
-    pagesController = PageController(initialPage: 1);
+    horizontalPagesController = PageController(initialPage: 1);
+    verticalPagesController = PageController();
     on<InitialFeedEvent>(_handleInitialEvent);
     on<LoadFeedEvent>(_fetchFeedStories);
     on<PageUpdatedEvent>((event, emit) {
@@ -34,7 +39,12 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       LoadFeedEvent event, Emitter<FeedState> emit) async {
     try {
       emit(LoadingFeedState());
-      List<Story> stories = await db.fetchStories(category: event.category);
+      if (horizontalPagesController.page != null) {
+        horizontalPagesController.animateToPage(1,
+            duration: const Duration(milliseconds: animationDuration),
+            curve: Curves.easeIn);
+      }
+      stories = await db.fetchStories(category: event.category);
       emit(LoadedFeedState(list: stories));
     } on FirebaseException catch (e) {
       emit(ErrorFeedState(message: 'Firebase:${e.toString()}'));
@@ -45,15 +55,25 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
   FutureOr<void> _launchCurrentStoryUrl(
       LaunchUrlEvent event, Emitter<FeedState> emit) async {
-    await launchUrl(Uri.parse(storyList[currentIndex].storyDetailUrl))
-        .then((value) {
-      pagesController.jumpToPage(1);
-    });
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      await launchUrl(Uri.parse(stories[currentIndex].storyDetailUrl))
+          .then((value) async {
+        await Future.delayed(const Duration(milliseconds: delayDuration));
+        horizontalPagesController.jumpToPage(1);
+      });
+    } else {
+      horizontalPagesController.animateToPage(1,
+          duration: const Duration(milliseconds: animationDuration),
+          curve: Curves.linear);
+    }
   }
 
   @override
   Future<void> close() {
-    pagesController.dispose();
+    horizontalPagesController.dispose();
+    verticalPagesController.dispose();
     return super.close();
   }
 }

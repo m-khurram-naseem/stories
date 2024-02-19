@@ -19,7 +19,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
       _searchFlex = 8,
       _categoryListFlex = 30,
       _notificationListFlex = 60;
-  
+
   @override
   Widget build(BuildContext context) {
     final Size(:width, :height) = MediaQuery.sizeOf(context);
@@ -27,7 +27,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
       appBar: AppBar(
         title: const Text(_appBarTitle),
         centerTitle: true,
-        actions: const[
+        actions: const [
           SettingsButton(),
         ],
       ),
