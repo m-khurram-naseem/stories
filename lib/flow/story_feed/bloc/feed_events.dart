@@ -23,3 +23,8 @@ class PageUpdatedEvent extends FeedEvent{
   const PageUpdatedEvent({required this.currentIndex,});
 }
 
+@immutable
+class NewStoriesEvent extends FeedEvent{}
+
+@immutable
+class ShareStoryEvent extends FeedEvent{}

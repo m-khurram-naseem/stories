@@ -27,28 +27,28 @@ class InputForm extends StatelessWidget {
             Spacer(
               flex: _topSpace,
             ),
-            Expanded(flex: _imageflex, child: StoryImageField()),
+            Expanded(flex: _imageflex, child: StoryImageField(),),
             Spacer(
               flex: _inputFieldBottomSpacerFlex,
             ),
-            Expanded(flex: _categoryFieldFlex, child: CategoryInputField()),
+            Expanded(flex: _categoryFieldFlex, child: CategoryInputField(),),
             Spacer(
               flex: _inputFieldBottomSpacerFlex,
             ),
-            Expanded(flex: _titleFieldFlex, child: TitleInputField()),
+            Expanded(flex: _titleFieldFlex, child: TitleInputField(),),
             Spacer(
               flex: _inputFieldBottomSpacerFlex,
             ),
             Expanded(
-                flex: _descriptionFieldFlex, child: DescriptionInputField()),
+                flex: _descriptionFieldFlex, child: DescriptionInputField(),),
             Spacer(
               flex: _inputFieldBottomSpacerFlex,
             ),
-            Expanded(flex: _storyUrlFieldFlex, child: StoryUrlInputField()),
+            Expanded(flex: _storyUrlFieldFlex, child: StoryUrlInputField(),),
             Spacer(
               flex: _inputFieldBottomSpacerFlex,
             ),
-            Expanded(flex: _storyByFieldFlex, child: StoryByInputField()),
+            Expanded(flex: _storyByFieldFlex, child: StoryByInputField(),),
             Spacer(
               flex: _bottomSpace,
             ),

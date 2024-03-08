@@ -48,6 +48,7 @@ class StoryView extends StatelessWidget {
               flex: _descriptionFlex,
               child: StoryDescription(
                 description: story.description,
+                storyBy: story.storyBy,
               ),
             ),
             const Spacer(

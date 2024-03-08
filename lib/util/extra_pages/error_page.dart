@@ -1,8 +1,9 @@
-
 import 'package:flutter/material.dart';
+import 'package:stories/util/theme/color_scheme.dart';
 
 class ErrorPage extends StatelessWidget {
   static const pageName = '/errorpage';
+  static const _errorMessage = 'Something went wrong';
   const ErrorPage({super.key});
 
   @override
@@ -11,12 +12,12 @@ class ErrorPage extends StatelessWidget {
       appBar: AppBar(),
       body: Center(
         child: Container(
-          color: Colors.red,
+          color: AppColorScheme.errorTextColor,
           child: const Center(
               child: Text(
-            'Something went wrong',
+            _errorMessage,
             style: TextStyle(
-              color: Colors.white,
+              color: AppColorScheme.lightTextColor,
             ),
           )),
         ),

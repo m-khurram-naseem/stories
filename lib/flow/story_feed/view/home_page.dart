@@ -1,65 +1,85 @@
+import 'dart:developer';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stories/flow/discover/view/discover_page.dart';
 import 'package:stories/flow/story_feed/bloc/feed_bloc.dart';
 import 'package:stories/flow/story_feed/bloc/feed_events.dart';
-import 'package:stories/flow/story_feed/model/story.dart';
+import 'package:stories/flow/story_feed/bloc/feed_states.dart';
 import 'package:stories/flow/story_feed/widgets/feed_widgets.dart';
 import 'package:stories/flow/story_feed/widgets/url_launcher_part.dart';
+import 'package:stories/util/app_constants/horizontal_page_numbers.dart';
+import 'package:stories/util/theme/color_scheme.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   static const pageName = '/';
+  static const _restorationId = 'horizontalScrollId';
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-
-  @override
-  void initState() {
-    context.read<FeedBloc>().add(const LoadFeedEvent());
-    super.initState();
-  }
-  
-  @override
   Widget build(BuildContext context) {
     final bloc = context.read<FeedBloc>();
+    FirebaseMessaging.onMessage.listen((event) {
+      log('[Listened]');
+      if ((bloc.horizontalPagesController.page ?? 0) ==
+          HorizontalPages.feedPage) {
+        bloc.add(NewStoriesEvent());
+      }
+    }, cancelOnError: true, onDone: () {}, onError: (error) {});
+    bloc.add(const LoadFeedEvent());
     return SafeArea(
-      child: Scaffold(
-        body: Center(
-          child: PageView(
-            controller: bloc.horizontalPagesController,
-            onPageChanged: (value) {
-              if (value == 2) {
-                bloc.add(LaunchUrlEvent());
-              }
-            },
-            children: const [
-              DiscoverPage(),
-              MainFeed(),
-              UrlLauncherPart(),
-            ],
-          ),
+      child: BlocListener<FeedBloc, FeedState>(
+        listenWhen: (previous, current) => current is NewStoriesState,
+        listener: _statesListener,
+        child: Scaffold(
+          body: Center(
+                child: PageView(
+                  controller: bloc.horizontalPagesController,
+                  allowImplicitScrolling: true,
+                  restorationId: _restorationId,
+                  physics: const ClampingScrollPhysics(),
+                  onPageChanged: (value) {
+                    if (value == HorizontalPages.urlLauncherPage) {
+                      bloc.add(LaunchUrlEvent());
+                    }
+                  },
+                  children: const [
+                    DiscoverPage(),
+                    MainFeed(),
+                    UrlLauncherPart(),
+                  ],
+                ),
+              ),              
         ),
       ),
     );
   }
-}
 
-List<Story> storyList = [
-  for (int i = 0; i < 10; i++)
-    Story(
-        storyId: 1,
-        title:
-            'Pic of screw in sandwich served on IndiGo flight goes viral, airline responds',
-        description:
-            'Pic of screw in sandwich served on IndiGo flight goes viral, airline responds Pic of screw in sandwich served on IndiGo flight goes viral, airline responds Pic of screw in sandwich served on IndiGo flight goes viral, airline responds Pic of screw in sandwich served on IndiGo flight goes viral, airline responds Pic of screw in sandwich served on IndiGo',
-        imageUrl:
-            'https://images.unsplash.com/photo-1575936123452-b67c3203c357?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D',
-        storyDetailUrl: 'https://www.instagram.com',
-        category: 'General',
-        dateTime: DateTime.now(),
-        storyBy: 'M Khurram Naseem'),
-];
+  void _statesListener(BuildContext context, FeedState state) {
+    if (state is NewStoriesState) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: AppColorScheme.tertiary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(
+            30,
+          ),
+        ),
+        width: MediaQuery.sizeOf(context).width * 0.4,
+        content: GestureDetector(
+            onTap: () {
+              context.read<FeedBloc>().add(const LoadFeedEvent());
+            },
+            child: const Center(
+              child: Text(
+                'New Trends',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: AppColorScheme.lightTextColor),
+              ),
+            )),
+        behavior: SnackBarBehavior.floating,
+      ));
+    }
+  }
+}

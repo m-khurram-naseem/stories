@@ -7,10 +7,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stories/flow/story_feed/model/story.dart';
 import 'package:stories/flow/upload_story/bloc/upload_events.dart';
 import 'package:stories/flow/upload_story/bloc/upload_states.dart';
+import 'package:stories/models/android.dart';
+import 'package:stories/models/app_notification.dart';
+import 'package:stories/models/message.dart';
+import 'package:stories/models/notification_android.dart';
+import 'package:stories/models/story_notification.dart';
+import 'package:stories/services/notification_service.dart';
 import 'package:stories/services/story_database.dart';
 import 'package:image_picker/image_picker.dart';
 
-class UploadBloc extends Bloc<UploadEvent, UploadState> {
+class UploadBloc extends Bloc<UploadEvent, UploadState>{
   static const _imageMissingMessage = 'Image Missing',
       _storyUploadingMessage = 'Story Uploading';
   static const _imageUploadingMessage = 'Image Uploading',
@@ -22,7 +28,8 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
       categoryController,
       storyByController;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  final StoryDb storyDb = StoryDb();
+  final StoryDb storyDb = StoryDb();  
+  final NotificationApiService _notificationService = NotificationApiService();
   Uint8List? imageBytes;
 
   UploadBloc() : super(UploadInitialState()) {
@@ -66,8 +73,7 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
               message:
                   _storyUploadingMessage)); // Informing UI with current status
           // Now Uploading whole story on Firestore
-          await storyDb.insertStory(
-            Story(
+          Story story = Story(
               storyId: dateTime.millisecondsSinceEpoch,
               title: titleController.text.trim(),
               description: descriptionController.text.trim(),
@@ -76,8 +82,11 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
               category: categoryController.text.toLowerCase().trim(),
               dateTime: dateTime,
               storyBy: storyByController.text.trim(),
-            ),
+            );
+          await storyDb.insertStory(
+            story
           );
+          _notifiyUsers(story);
           // Emitting success state to notifiy user of successful upload
           emit(const UploadedState(message: _uploadSuccessMessage));
 
@@ -100,6 +109,15 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
       imageBytes = await file.readAsBytes();
       emit(ImagePickedState(bytes: imageBytes!));
     }
+  }
+
+  _notifiyUsers(Story story) async{
+    NotificationAndroid androidNotification = NotificationAndroid(image: story.imageUrl);
+    Android android = Android(directBootOk: true, notification: androidNotification);
+    StoryNotification storyNotification = StoryNotification(title: story.title, body: story.description);
+    Message message = Message(topic: story.category, notification: storyNotification, android: android);
+    AppNotification appNotification = AppNotification(message: message);
+    await _notificationService.pushNotification(notification: appNotification);
   }
 
   @override

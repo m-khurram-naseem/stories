@@ -1,12 +1,9 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stories/flow/discover/widgets/category_list.dart';
-import 'package:stories/flow/story_feed/bloc/feed_bloc.dart';
-import 'package:stories/flow/story_feed/bloc/feed_events.dart';
 import 'package:stories/flow/story_feed/widgets/feed_widgets.dart';
+import 'package:stories/util/app_constants/font_family.dart';
+import 'package:stories/util/app_constants/image_assets.dart';
 
 class NoDataWidget extends StatefulWidget {
   const NoDataWidget({super.key});
@@ -50,65 +47,78 @@ class _NoDataWidgetState extends State<NoDataWidget> {
 }
 
 class NoInternetWidget extends StatelessWidget {
-  static const _errorMessage = 'No Internet Found',
-      _imagePath = 'assets/images/no_internet.png';
-  static const _tryAgainText = 'Try Again';
+  static const _errorMessage = 'No Internet Connection',
+      _refreshText = 'Swipe down to Refresh';
   static const _topSpace = 15,
       _imageFlex = 25,
       _middleSpace = 10,
       _messageTextFlex = 10,
       _btnFlex = 7,
       _bottomSpace = 33;
-  static const _leftPadding = 20.0, _rightPadding = 20.0;
-  static const _borderRadius = 10.0;
+  static const _fontSizePercent = 0.05;
   const NoInternetWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<FeedBloc>();
-    return Center(
-      child: Column(
-        children: [
-          const Spacer(
-            flex: _topSpace,
-          ),
-          Expanded(flex: _imageFlex, child: Image.asset(_imagePath)),
-          const Spacer(
-            flex: _middleSpace,
-          ),
-          const Expanded(flex: _messageTextFlex, child: Text(_errorMessage)),
-          Expanded(
-            flex: _btnFlex,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  left: _leftPadding, right: _rightPadding),
-              child: SizedBox.expand(
-                child: ElevatedButton(
-                  onPressed: () {
-                    bloc.add(const LoadFeedEvent());
-                  },
-                  style: ButtonStyle(
-                    shape: MaterialStatePropertyAll(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(_borderRadius),
-                      ),
-                    ),
-                  ),
-                  child: const Text(_tryAgainText),
+    final Size(:width, :height) = MediaQuery.sizeOf(context);
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: SizedBox(
+        width: width,
+        height: height,
+        child: Column(
+          children: [
+            const Spacer(
+              flex: _topSpace,
+            ),
+            Expanded(
+              flex: _imageFlex,
+              child: Image.asset(
+                ImageAssets.noInternetImage,
+              ),
+            ),
+            const Spacer(
+              flex: _middleSpace,
+            ),
+            Expanded(
+              flex: _messageTextFlex,
+              child: Text(
+                _errorMessage,
+                style: TextStyle(
+                  fontFamily: FontFamily.tinos,
+                  fontSize: width * _fontSizePercent,
                 ),
               ),
             ),
-          ),
-          const Spacer(
-            flex: _bottomSpace,
-          ),
-        ],
+            Expanded(
+              flex: _btnFlex,
+              child: Text(
+                _refreshText,
+                style: TextStyle(
+                  fontFamily: FontFamily.tinos,
+                  fontSize: width * _fontSizePercent,
+                ),
+              ),
+            ),
+            const Spacer(
+              flex: _bottomSpace,
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
 class DataNotFoundWidget extends StatelessWidget {
+  static const _imageTopSpace = 15,
+      _imageFlex = 25,
+      _textTopSpace = 5,
+      _textFlex = 10,
+      _listFlex = 35,
+      _listBottomSpace = 10;
+  static const _text =
+      'No story regarding this category\nYou may browse some other categories';
   const DataNotFoundWidget({super.key});
 
   @override
@@ -116,22 +126,27 @@ class DataNotFoundWidget extends StatelessWidget {
     return Center(
       child: Column(
         children: [
-          Spacer(
-            flex: 15,
-          ),
-          Expanded(flex: 25, child: Image.asset('assets/images/no_data.png')),
-          Spacer(
-            flex: 5,
+          const Spacer(
+            flex: _imageTopSpace,
           ),
           Expanded(
-              flex: 10,
-              child: const Text(
-                'No story regarding this category\nYou may browse some other categories',
+            flex: _imageFlex,
+            child: Image.asset(
+              ImageAssets.noDataImage,
+            ),
+          ),
+          const Spacer(
+            flex: _textTopSpace,
+          ),
+          const Expanded(
+              flex: _textFlex,
+              child: Text(
+                _text,
                 textAlign: TextAlign.center,
               )),
-          Expanded(flex: 35, child: const CategoryList()),
-          Spacer(
-            flex: 10,
+          const Expanded(flex: _listFlex, child: CategoryList()),
+          const Spacer(
+            flex: _listBottomSpace,
           )
         ],
       ),

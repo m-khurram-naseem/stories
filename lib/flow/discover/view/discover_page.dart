@@ -27,9 +27,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
       appBar: AppBar(
         title: const Text(_appBarTitle),
         centerTitle: true,
-        actions: const [
-          SettingsButton(),
-        ],
+        leading: const SettingsButton(),
+        actions: const [ForwardButton()],
       ),
       body: Center(
         child: SingleChildScrollView(

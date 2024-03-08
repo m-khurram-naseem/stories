@@ -24,3 +24,8 @@ class ErrorFeedState extends FeedState{
   const ErrorFeedState({required this.message});
 }
 
+@immutable
+class NoInternetState extends FeedState{}
+
+@immutable
+class NewStoriesState extends FeedState{}

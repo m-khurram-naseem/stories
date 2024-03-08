@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:stories/util/theme/color_scheme.dart';
 
 class LoadingWidget extends StatelessWidget {
   static const _imageBoxFlex = 30,
@@ -13,8 +14,8 @@ class LoadingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: Colors.grey.shade300,
-      highlightColor: Colors.grey.shade100,
+      baseColor: AppColorScheme.shimmerBaseColor,
+      highlightColor: AppColorScheme.shimmerHighlightColor,
       child: const Padding(
         padding: EdgeInsets.all(_padding),
         child: Column(
@@ -82,7 +83,7 @@ class LoadingWidget extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   child: LoadingBox(
                     isLast: true,
-                  )),
+                  ),),
             ),
             Spacer(
               flex: _remainingFlex,

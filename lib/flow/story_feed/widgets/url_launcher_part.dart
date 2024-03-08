@@ -7,6 +7,6 @@ class UrlLauncherPart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child:LoadingWidget()),);
+    return const Scaffold(body: Center(child:LoadingWidget(),),);
   }
 }

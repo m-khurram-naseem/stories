@@ -1,41 +1,34 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 class StoryNotification {
   String title;
-  String body;
-  String image;
+  String body;  
   StoryNotification({
     required this.title,
-    required this.body,
-    required this.image,
+    required this.body,    
   });
 
   StoryNotification copyWith({
     String? title,
-    String? body,
-    String? image,
+    String? body,    
   }) {
     return StoryNotification(
       title: title ?? this.title,
-      body: body ?? this.body,
-      image: image ?? this.image,
+      body: body ?? this.body,      
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'title': title,
-      'body': body,
-      'image': image,
+      'body': body,      
     };
   }
 
   factory StoryNotification.fromMap(Map<String, dynamic> map) {
     return StoryNotification(
       title: map['title'] as String,
-      body: map['body'] as String,
-      image: map['image'] as String,
+      body: map['body'] as String,      
     );
   }
 
@@ -44,7 +37,7 @@ class StoryNotification {
   factory StoryNotification.fromJson(String source) => StoryNotification.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() => 'StoryNotification(title: $title, body: $body, image: $image)';
+  String toString() => 'StoryNotification(title: $title, body: $body)';
 
   @override
   bool operator ==(covariant StoryNotification other) {
@@ -52,10 +45,9 @@ class StoryNotification {
   
     return 
       other.title == title &&
-      other.body == body &&
-      other.image == image;
+      other.body == body;      
   }
 
   @override
-  int get hashCode => title.hashCode ^ body.hashCode ^ image.hashCode;
+  int get hashCode => title.hashCode ^ body.hashCode;
 }

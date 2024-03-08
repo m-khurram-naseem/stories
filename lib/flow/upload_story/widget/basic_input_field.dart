@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stories/flow/upload_story/bloc/upload_bloc.dart';
+import 'package:stories/util/app_constants/menu_constants.dart';
 import 'package:stories/util/input_validators/input_validator.dart';
 
 typedef Validator = String? Function(String?);
@@ -97,15 +98,12 @@ class CategoryInputField extends StatelessWidget {
     return SizedBox(
       width: MediaQuery.sizeOf(context).width,
       child: DropdownMenu(
-        dropdownMenuEntries: const [
-          DropdownMenuEntry(value: 'technology', label: 'Technology'),
-          DropdownMenuEntry(value: 'politics', label: 'Politics'),
-          DropdownMenuEntry(value: 'entertainment', label: 'Entertainment'),
-          DropdownMenuEntry(value: 'sports', label: 'Sports'),
-          DropdownMenuEntry(value: 'religious', label: 'Religious'),
-          DropdownMenuEntry(value: 'international', label: 'International'),
-          DropdownMenuEntry(value: 'startups', label: 'Startups'),
-          DropdownMenuEntry(value: 'education', label: 'Education'),
+        dropdownMenuEntries: [
+          for(int i = 0 ; i < StoryCategories.categories.length ; i++)
+          DropdownMenuEntry(
+            value: StoryCategories.categories.values.elementAt(i).value,
+            label: StoryCategories.categories.values.elementAt(i).label,
+          ),          
         ],
         controller: bloc.categoryController,
         label: const Text(_label),
@@ -114,11 +112,6 @@ class CategoryInputField extends StatelessWidget {
   }
 }
 
-// BasicInputField(
-//       validator: InputValidator.categoryValidator,
-//       controller: bloc.categoryController,
-//       label: _label,
-//     );
 
 // Describes the owner of story / Which news channel of website published this story
 class StoryByInputField extends StatelessWidget {

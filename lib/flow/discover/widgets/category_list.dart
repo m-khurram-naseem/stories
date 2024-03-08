@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stories/flow/story_feed/bloc/feed_bloc.dart';
 import 'package:stories/flow/story_feed/bloc/feed_events.dart';
-import 'package:stories/util/asset_constants/image_assets.dart';
+import 'package:stories/util/app_constants/image_assets.dart';
 
 class CategoryList extends StatefulWidget {
   const CategoryList({super.key});
